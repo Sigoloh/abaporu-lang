@@ -4,6 +4,8 @@ import { openFile } from './utils/openFile.js';
 import { tokenize } from './utils/tokenizer.js';
 import { validateInstruction } from './utils/validateInstruction.js';
 import { instructions } from './utils/instructions.js';
+import { getBiggerBlockOrder } from './utils/getBiggerOrderBlock.js';
+import { sortByBlockOrder } from './utils/sortBlockOrder.js';
 const values = [];
 
 const args =  process.argv.slice(2);
@@ -15,7 +17,7 @@ const tokenized = tokenize(fileContent);
 
 const sausage = [0];
 
-const blockNamesAndPositions = {};
+let blockNamesAndPositions = {};
 let pointer = 0;
 
 const tokenListLength = tokenized.length;
@@ -50,14 +52,17 @@ for(let i = 0; i < tokenListLength; i++){
     case 'put':
       process.stdout.write(`${String.fromCharCode(sausage[pointer])}`)
       break;
+    case 'putVal':
+      process.stdout.write(`${(sausage[pointer])}`)
+      break;
     case 'endBlock':
       let returnTo = -1;
-      for(const blockName in blockNamesAndPositions){
-        const block = blockNamesAndPositions[blockName]
-        if(block.in){
-          returnTo = block.entered;
-          block.in = false;
-        }
+      blockNamesAndPositions = sortByBlockOrder(blockNamesAndPositions);
+      const firstBlockName = Object.keys(blockNamesAndPositions)[0];
+      if(blockNamesAndPositions[firstBlockName].in){
+        returnTo = blockNamesAndPositions[firstBlockName].entered;
+        blockNamesAndPositions[firstBlockName].in = false;
+        blockNamesAndPositions[firstBlockName].blockOrder = -1;
       }
       if(returnTo === -1){
         throw new Error('[FATAL] Could not find where to return the pointer after leave the block')
@@ -67,9 +72,16 @@ for(let i = 0; i < tokenListLength; i++){
     case undefined: 
       const blockNameAndPosition = blockNamesAndPositions[token]
       if(blockNameAndPosition){
+        const biggerOrderBlock = Object.keys(blockNamesAndPositions).length > 0 ?
+          getBiggerBlockOrder(blockNamesAndPositions) : 
+          0;
+
+        blockNameAndPosition.blockOrder = biggerOrderBlock + 1;
+
         blockNameAndPosition.in = true;
 
         blockNameAndPosition.entered = i;
+
         i = blockNameAndPosition.beginOfBlock + 1;
 
       } else {
@@ -81,11 +93,13 @@ for(let i = 0; i < tokenListLength; i++){
           throw new Error(`Note: you created a block assign the color: ${token} and did not closed it!`)
         }
 
+
         blockNamesAndPositions[token] = {
           beginOfBlock,
           endOfBlock,
           entered: -1,
           in: false,
+          blockOrder: -1
         }
 
         i = endOfBlock;
