@@ -4,4 +4,6 @@ export const instructions = {
   "#00FF00": "nextCell",
   "#FFF800": "prevCell",
   "#FFFFFF": "put",
+  "#555555": "putVal",
+  "#FFA500": "endBlock"
 } 
