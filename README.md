@@ -18,16 +18,15 @@ As previously said, you use colors to determine the instructions your program sh
 ### List of implemented instructions
 
 
-| Name     | Colour                                                                                                                   | Function                                                           | Hex     |
-|----------|--------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|---------|
-| addOne   | <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">  <rect width="100%" height="100%" fill="#FF0000"/></svg> | Add one to the current cell of the list                            | #FF0000 |
-| subOne   | <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#0000FF"/></svg>   | Subtract one to the current cell of the list                       | #0000FF |
-| nextcell | <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#00FF00"/></svg>   | Move the pointer to the next cell of the list                      | #00FF00 |
-| prevCell | <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#FFF800"/></svg>   | Move the pointer to the previous cell of the list                  | #FFF800 |
-| put      | \<white>   | Puts the value of the current cell in the `stdout` using ASCII table | #FFFFFF |
-| putVal   | <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#555555"/></svg>   | Puts the value of the current cell in the `stdout` as it is          | #555555 |
-| endBlock | <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#FFA200"/></svg>   | End a previously declared block. More on blocks in one of the next topics.         | #FFA500 |
-
+| Name     | Function                                                                   | Hex     |
+|----------|----------------------------------------------------------------------------|---------|
+| addOne   | Add one to the current cell of the list                                    | #FF0000 |
+| subOne   | Subtract one to the current cell of the list                               | #0000FF |
+| nextcell | Move the pointer to the next cell of the list                              | #00FF00 |
+| prevCell | Move the pointer to the previous cell of the list                          | #FFF800 |
+| put      | Puts the value of the current cell in the `stdout` using ASCII table       | #FFFFFF |
+| putVal   | Puts the value of the current cell in the `stdout` as it is                | #555555 |
+| endBlock | End a previously declared block. More on blocks in one of the next topics. | #FFA500 |
 ### Comentaries
 As it is impossible to keep track of all the things instructions do while developing in Abaporu Lang, I implement comments in the `.abapl`.</br>
 #### Single line comment
