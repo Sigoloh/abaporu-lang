@@ -82,7 +82,7 @@ for(let i = 0; i < tokenListLength; i++){
 
         blockNameAndPosition.entered = i;
 
-        i = blockNameAndPosition.beginOfBlock + 1;
+        i = blockNameAndPosition.beginOfBlock;
 
       } else {
         const beginOfBlock = i;
@@ -110,3 +110,4 @@ for(let i = 0; i < tokenListLength; i++){
       throw new Error(`[FATAL] Invalid instruction or block: ${token}`);
   }
 }
+process.stdout.write(String.fromCharCode(10));
