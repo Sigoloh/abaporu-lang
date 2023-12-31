@@ -5,5 +5,6 @@ export const instructions = {
   "#FFF800": "prevCell",
   "#FFFFFF": "put",
   "#555555": "putVal",
-  "#FFA500": "endBlock"
+  "#FFA500": "endBlock",
+  "#3FFFE8": "endLoop",
 } 

@@ -1,0 +1,25 @@
+* Defines a block to puts 'he'
+#FABCDE
+  * Puts h
+  #110068
+    #FF0000
+  #3FFFE8
+  #FFFFFF
+  #110068
+    #0000FF
+  #3FFFE8
+
+  * Puts e
+  #110065
+    #FF0000
+  #3FFFE8
+  #FFFFFF
+  #110065
+    #0000FF
+  #3FFFE8
+#FFA500
+
+* Puts he 100 times
+#110064
+  #FABCDE
+#3FFFE8

@@ -6,6 +6,7 @@ import { instructions } from './utils/instructions.js';
 import { getBiggerBlockOrder } from './utils/getBiggerOrderBlock.js';
 import { sortByBlockOrder } from './utils/sortBlockOrder.js';
 import { generateImage } from './utils/generateImage.js';
+import { findLoopByEndLoop } from './utils/findLoopByEndLoop.js';
 const values = [];
 
 const args =  process.argv.slice(2);
@@ -18,8 +19,8 @@ const tokenized = tokenize(fileContent);
 const sausage = [0];
 
 let blockNamesAndPositions = {};
+let loopRegister = {}
 let pointer = 0;
-
 console.log('+===================================+')
 console.log('+                                   +')
 console.log('+            Code result            +')
@@ -72,11 +73,47 @@ for(let i = 0; i < tokenListLength; i++){
         blockNamesAndPositions[firstBlockName].blockOrder = -1;
       }
       if(returnTo === -1){
-        throw new Error('[FATAL] Could not find where to return the pointer after leave the block')
+        throw new Error('[FATAL] Could not find where to return the pointer after leave the block. Maybe you named two blocks with the same?')
       }
       i = returnTo;
       break;
+    case 'endLoop':
+      const [loopRunning, runningLoopKey] =  findLoopByEndLoop(loopRegister, i);
+      
+      if(!loopRunning || !runningLoopKey){
+        throw new Error(`[FATAL]: Interpreted found a closing loop token but could not find the loop it belongs to in token ${i}. Maybe your trying to use a loop inside a loop?`)
+      }
+
+      if(loopRunning.counter - 1 > 0){
+        loopRegister[runningLoopKey].counter--;
+        i = loopRunning.startOfLoop;
+      }else{
+        delete loopRegister[runningLoopKey]
+      } 
+      break;
     case undefined: 
+      if(token.startsWith('#11')){
+        const counter = parseInt(token.replace('#11', ''), 16)
+        const startOfLoop = tokenized.indexOf(token, i);
+        const endOfLoop = tokenized.indexOf('#3FFFE8', i);
+        if(endOfLoop === -1){
+          throw new Error(`[FATAL]: You declared the loop ${token} in the position ${tokenized.indexOf(token)} without closing it.`)
+        }
+        const executingLoop = loopRegister[`${token}${startOfLoop}${endOfLoop}`];
+        // Register loop as a token if it is not registered yet.
+        if(!executingLoop){
+          loopRegister[`${token}${startOfLoop}${endOfLoop}`] = {
+            counter: counter,
+            startOfLoop: startOfLoop,
+            endOfLoop: endOfLoop
+          }
+          i--;
+          break;
+        }else{
+          i = executingLoop.startOfLoop;
+        }
+        break;
+      }
       const blockNameAndPosition = blockNamesAndPositions[token]
       if(blockNameAndPosition){
         const biggerOrderBlock = Object.keys(blockNamesAndPositions).length > 0 ?
