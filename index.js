@@ -1,4 +1,3 @@
-import fs from 'fs';
 import {processArgs} from './utils/processArgs.js'
 import { openFile } from './utils/openFile.js';
 import { tokenize } from './utils/tokenizer.js';
@@ -6,6 +5,7 @@ import { validateInstruction } from './utils/validateInstruction.js';
 import { instructions } from './utils/instructions.js';
 import { getBiggerBlockOrder } from './utils/getBiggerOrderBlock.js';
 import { sortByBlockOrder } from './utils/sortBlockOrder.js';
+import { generateImage } from './utils/generateImage.js';
 const values = [];
 
 const args =  process.argv.slice(2);
@@ -19,6 +19,13 @@ const sausage = [0];
 
 let blockNamesAndPositions = {};
 let pointer = 0;
+
+console.log('+===================================+')
+console.log('+                                   +')
+console.log('+            Code result            +')
+console.log('+                                   +')
+console.log('+===================================+')
+
 
 const tokenListLength = tokenized.length;
 for(let i = 0; i < tokenListLength; i++){
@@ -111,3 +118,14 @@ for(let i = 0; i < tokenListLength; i++){
   }
 }
 process.stdout.write(String.fromCharCode(10));
+console.log('+===================================+')
+console.log('+                                   +')
+console.log('+           Art Creation            +')
+console.log('+                                   +')
+console.log('+===================================+')
+
+try {
+  generateImage(tokenized, organizedArgs.outputPath);
+} catch (error) {
+  console.log(error); 
+}
