@@ -1,0 +1,95 @@
+* Define a block to put 'H' and go to next cell
+#FF1010
+  #110048
+    #FF0000
+  #3FFFE8
+  #FFFFFF
+  #00FF00
+#FFA500
+
+* Define a block to put 'e' and go to next cell
+#AB1010
+  #110065
+    #FF0000
+  #3FFFE8
+  #FFFFFF
+  #00FF00
+#FFA500
+
+* Define a block to put 'l' and go to next cell
+#CD2315
+  #11006C
+    #FF0000
+  #3FFFE8
+  #FFFFFF
+  #00FF00
+#FFA500
+
+* Define a block to put 'o' and go to next cell
+#FA123A
+  #11006F
+    #FF0000
+  #3FFFE8
+  #FFFFFF
+  #00FF00
+#FFA500
+
+* Define a block to put <space> and go to next cell
+#AB12CA
+  #110020
+    #FF0000
+  #3FFFE8
+  #FFFFFF
+  #00FF00
+#FFA500
+
+* Define a block to put 'w' and go to next cell
+#BA18AF
+  #110077
+    #FF0000
+  #3FFFE8
+  #FFFFFF
+  #00FF00
+#FFA500
+
+* Define a block to put 'r' and go to next cell
+#B12A3F
+  #110072
+    #FF0000
+  #3FFFE8
+  #FFFFFF
+  #00FF00
+#FFA500
+
+* Define a block to put 'd' and go to next cell
+#CB4393
+  #110064
+    #FF0000
+  #3FFFE8
+  #FFFFFF
+  #00FF00
+#FFA500
+
+* Define a block to put '!' and go to next cell
+#F1A3B4
+  #110021
+    #FF0000
+  #3FFFE8
+  #FFFFFF
+  #00FF00
+#FFA500
+
+* Puts Hello world!
+#FF1010 * H
+#AB1010 * e
+#CD2315 * l
+#CD2315 * l
+#FA123A * o
+#AB12CA * <space>
+#BA18AF * w
+#FA123A * o
+#B12A3F * r
+#CD2315 * l
+#CB4393 * d
+#F1A3B4 * !
+

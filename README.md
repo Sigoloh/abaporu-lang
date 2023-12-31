@@ -10,8 +10,6 @@ The way this esolang works is similar in functionality to [Brainfuck](about:blan
 To use the language by your own, you can clone this repository in your computer with NodeJs installed and run:
 `node index.js -p <your-input-file.abapl> -o <path-you-want-to-output-canva>`
 
-**Note**: the output functionality is not yet implemented, but it is mandatory to run the program.
-
 ## Basic usage
 As previously said, you use colors to determine the instructions your program should follow. I say should because as this documentation is written, I'd spent less then 5 hours into the Abaporu's interpreter.
 
@@ -27,6 +25,7 @@ As previously said, you use colors to determine the instructions your program sh
 | put      | Puts the value of the current cell in the `stdout` using ASCII table       | #FFFFFF |
 | putVal   | Puts the value of the current cell in the `stdout` as it is                | #555555 |
 | endBlock | End a previously declared block. More on blocks in one of the next topics. | #FFA500 |
+| endLoop  | End a previously started loop. More on loops in one of the next topics.    | #3FFFE8 |
 ### Comentaries
 As it is impossible to keep track of all the things instructions do while developing in Abaporu Lang, I implement comments in the `.abapl`.</br>
 #### Single line comment
@@ -90,6 +89,39 @@ To use the instructions of the block, you just need to call it again using the s
 `[stdout]: H`</br>
 
 **Note**: Better usage of blocks can be found in `./examples/BlockHelloWorld.abapl`
+**Note**: As this documentation is written, Abaporu Lang does NOT support declaration of blocks inside blocs
 
-## Is Abaporu finished?
-No, I need to implement loops, an output function and make an IDE.
+## Loops
+Even with the use of `blocks` your art may look awful because of the times you have to repeat `#FF0000` `#0000FF` to put the letters you want.
+That's why I've implemented the concept of loops in this beautiful language.
+
+### Using loops
+The loops inside Abaporu language kind of work like a basic `for` loop, where you declare a range and the code inside the loop runs until the range reach its limit.
+For examplo, a `for` loop in javascript that runs 10 times look like this:
+
+```javascript
+for(let i = 0; i < 10; i++){
+    console.log('This will run 10 times')
+}
+```
+Similarly, to use loops in Abaporu, you have to declare it using a "keyword", and assign a range for it.
+
+Every `loop` **MUST** start with `#11` meaning that a `loop`, will never be red. The other 6 elements of a Hex color, will determine the range of the loop.
+The code that should be executed during the loop will be all the instructions between loop declaration and `endLoop`(#3FFFE8)
+So, for example, to declare a loop that will run 10 times you do:
+```
+#11000A
+    * Some Abaporu code here
+#3FFFE8
+* There is no need to call a loop after declaring it, as it's execution is linear and will be deleted of the runtime after its range is reached.
+```
+
+So in this case, I declared a loop with `#11000A`.
+`#11` declare it as a loop and `000A` is 10 in HEX. You can use a conversor to determine the color you need.
+
+**Note**: As yout propably already discovered, Abaporu lang has a limitation of 65535 to the range of it's loops. If by any misterious reason you need a loop bigger than that, you can use two loops operating on the same sausage element.
+**Note**: As this documentation is written, there is no suport for loops inside loops.
+**Note**: Better use of loops can be found in the `examples` folder of this project.
+
+## Wondering what your code look like?
+Open the output link sent after every succesfull running of this interpreter.
