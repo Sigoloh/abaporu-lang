@@ -14,7 +14,7 @@ export function generateImage(tokens, outputPath){
 
     const tail = `</body></html>`
 
-    const artSize = parseInt(Math.sqrt(tokens.length)) + 1
+    const artSize = Math.round(parseInt(Math.sqrt(tokens.length)))
 
     const canvaMatrix = [[]];
 

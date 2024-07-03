@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/Sigoloh/abaporu-lang/issues"
   },
-  "homepage": "https://github.com/Sigoloh/abaporu-lang#readme"
+  "homepage": "https://github.com/Sigoloh/abaporu-lang#readme",
+  "dependencies": {
+    "vue-toastification": "^2.0.0-rc.5"
+  }
 }

@@ -1,0 +1,14 @@
+:root {
+  --dark: #1e1e1e;
+  --clear: #fff;
+  --yellow: #ffec42;
+  --dark-yellow: #ffbd42;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--dark);
+  color: var(--clear);
+  font-family: "Roboto", sans-serif;
+}
