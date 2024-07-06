@@ -3,19 +3,24 @@
 //
 
 #include <iostream>
-#include <cstring>
-#include <vector>
+#include <numeric>
+
 #include "./interpreter_graph_node.cpp"
+#include <utility>
+#include <vector>
 using namespace std;
 
 class Interpreter_Graph{
     private:
         Interpreter_Graph_Node* instructions_root = nullptr;
+        string name;
         string run_status;
         int slots_needed = 1;
         bool waiting_loop = false;
+        bool waiting_block = false;
         Interpreter_Graph* loop_to_run = nullptr;
-        Interpreter_Graph_Node* get_last_instruction(){
+        vector<Interpreter_Graph*> blocks;
+        [[nodiscard]] Interpreter_Graph_Node* get_last_instruction() const {
             Interpreter_Graph_Node* curr = this->instructions_root;
 
             while (curr->get_next() != nullptr) {
@@ -46,7 +51,15 @@ class Interpreter_Graph{
             return this->instructions_root;
         }
 
-        void handle_instruction(string instruction) {
+        void see_last_node() {
+            auto node = this->get_root();
+            while(node->get_next() != nullptr) {
+                node = node->get_next();
+            }
+            node->see_resume();
+        }
+
+        void handle_instruction(const string& instruction) {
             Interpreter_Graph_Node* new_instruction = nullptr;
             if(instruction == "#FF0000"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "add");
@@ -65,8 +78,6 @@ class Interpreter_Graph{
                 new_instruction = new Interpreter_Graph_Node(instruction, "endb");
             } else if (instruction == "#3FFFE8"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "endl");
-                this->loop_to_run = nullptr;
-                this->waiting_loop = false;
             }  else if (instruction.substr(0, 3) == "#11"){
                 stringstream loop_count_hex;
 
@@ -78,7 +89,7 @@ class Interpreter_Graph{
 
                 new_instruction = new Interpreter_Graph_Node(instruction, "defl", loop_count);
             } else {
-                cout<<"Probably a block"<<endl;
+                new_instruction = new Interpreter_Graph_Node(instruction, "defb");
             }
 
             if(this->instructions_root == nullptr) {

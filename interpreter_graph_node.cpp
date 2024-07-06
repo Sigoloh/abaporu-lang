@@ -55,4 +55,8 @@ class Interpreter_Graph_Node{
             cout<<"Opperation "<<this->operation<<endl;
             cout<<"Aux "<<this->aux<<endl;
         }
+
+        string get_instruction() {
+            return this->instruction;
+        }
 };

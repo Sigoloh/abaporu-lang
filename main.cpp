@@ -34,7 +34,7 @@ vector<string> prepare_instructions(const string& file_path){
 
 void get_arguments(int argc, char *argv[], char ***input_target, char ***output_target){
 
-    for(int i = 0; i < argc; i++){
+    for(int i = 0; i < argc; i++) {
         if(strcmp("-i", argv[i]) == 0){
             *input_target = &argv[i+1];
         }
@@ -68,25 +68,10 @@ int main(const int argc, char *argv[]){
     }
 
     if(output_target == nullptr){
-        cout<<"[WARNING] No output file provided. You will not be able to receive your art after this process"<<endl;
-        return 1;
+        // cout<<"[WARNING] No output file provided. You will not be able to receive your art after this process"<<endl;
     }
 
-    cout<<"+=================================+"<<endl;
-    cout<<"Input file:"<<endl;
-    cout<<*input_target<<endl;
-    cout<<"+=================================+"<<endl;
-    cout<<endl;
-
-    cout<<"+=================================+"<<endl;
-    cout<<"Output file:"<<endl;
-    cout<<*output_target<<endl;
-    cout<<"+=================================+"<<endl;
-    cout<<endl;
-
     vector<string> instructions_vec = prepare_instructions(*input_target);;
-
-    cout<<"Construcao do grafo"<<endl;
 
     const auto graph = new Interpreter_Graph();
 
@@ -95,7 +80,6 @@ int main(const int argc, char *argv[]){
     }
 
     auto runner = new Runner(graph);
-
     runner->run();
 
     return 0;
