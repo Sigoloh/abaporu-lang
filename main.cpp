@@ -33,8 +33,13 @@ vector<string> prepare_instructions(const string& file_path){
     return instruction_vector;
 }
 
-void get_arguments(int argc, char *argv[], char ***input_target, char ***output_target){
-
+int get_arguments(
+    int argc,
+    char *argv[],
+    char ***input_target,
+    char ***output_target,
+    vector<pair<string, char*>>* extra_options
+){
     for(int i = 0; i < argc; i++) {
         if(strcmp("-i", argv[i]) == 0){
             *input_target = &argv[i+1];
@@ -43,33 +48,73 @@ void get_arguments(int argc, char *argv[], char ***input_target, char ***output_
         if(strcmp("-o", argv[i]) == 0){
             *output_target = &argv[i+1];
         }
+
+        if(strcmp("--mode", argv[i]) == 0 || strcmp("-m", argv[i]) == 0) {
+            if(i + 1 >= argc) {
+                cout<<"Flag "<<argv[i]<<" used without value!"<<endl;
+                return 1;
+            }
+            pair<string, char*> extra_option = {"--mode", argv[i + 1]};
+            extra_options->push_back(extra_option);
+        }
+
+        if(strcmp("--cpp-output", argv[i]) == 0 || strcmp("-cppo", argv[i]) == 0) {
+            if(i + 1 >= argc) {
+                cout<<"Flag "<<argv[i]<<" used without value!"<<endl;
+                return 1;
+            }
+            pair<string, char*> extra_option = {"--cpp-output", argv[i + 1]};
+            extra_options->push_back(extra_option);
+        }
+
+        if(strcmp("--help", argv[i]) == 0 || strcmp("-h", argv[i]) == 0) {
+            pair<string, char*> extra_option = {"--help", new char[0]};
+            extra_options->push_back(extra_option);
+        }
     }
+
+    return 0;
 }
 
-void interpret(Interpreter_Graph* graph_to_use) {
-    int sausage[graph_to_use->get_slots_needed()];
+void print_help() {
+    cout<<"Use: abapl -i [.abapl file] -o [path to save the art] [extra options]"<<endl;
+    cout<<"Extra options:"<<endl;
+    cout<<"--mode -m   value: "<<"compile | run"<<"   Choose the way abapl will handle your code. Default: run & compile"<<endl;
+    cout<<"--cpp-output -cppo   value: "<<"path"<<"   Path to save the .cpp file after compilation. Default: [abapl-folder]/outputs/output.cpp"<<endl;
+    cout<<"--help -h"<<"   Display this message"<<endl;
+}
 
-    for(int i = 0; i < graph_to_use->get_slots_needed(); ++i) {
-        sausage[i] = 0;
+char* search_option(const string &option_to_search, const vector<pair<string, char*>>* options) {
+
+    for(const auto & option : *options) {
+        if(option.first == option_to_search) {
+            return option.second;
+        }
     }
 
-
+    return nullptr;
 }
 
 int main(const int argc, char *argv[]){
 
     char **input_target = nullptr;
     char **output_target = nullptr;
+    vector<pair<string, char*>> extra_options;
+    int arguments_response = get_arguments(argc, argv, &input_target, &output_target, &extra_options);
 
-    get_arguments(argc, argv, &input_target, &output_target);
-
-    if(input_target == nullptr){
-        cout<<"[USER ERROR] No input file provided"<<endl;
-        return 1;
+    if(arguments_response != 0) {
+        print_help();
+        return arguments_response;
     }
 
-    if(output_target == nullptr){
-        // cout<<"[WARNING] No output file provided. You will not be able to receive your art after this process"<<endl;
+    if(input_target == nullptr) {
+        print_help();
+        return 0;
+    }
+
+    if(search_option("help", &extra_options) != nullptr) {
+        print_help();
+        return 0;
     }
 
     vector<string> instructions_vec = prepare_instructions(*input_target);;
@@ -82,10 +127,36 @@ int main(const int argc, char *argv[]){
 
     auto runner = new Runner(graph);
 
-    auto compiler = new Compiler(graph);
+    auto out_file = search_option("--cpp-output", &extra_options);
 
-    runner->run();
+    Compiler* compiler;
+    if(out_file != nullptr) {
+        compiler = new Compiler(graph, out_file);
+    }else {
+        compiler = new Compiler(graph);
+    }
 
-    compiler->compile();
-    return 0;
+    if(search_option("--mode", &extra_options) == nullptr) {
+        runner->run();
+
+        compiler->compile();
+
+        return 0;
+    }
+
+    if(strcmp("run", search_option("--mode", &extra_options)) == 0) {
+        runner->run();
+        return 0;
+    }
+
+    if(strcmp("compile", search_option("--mode", &extra_options)) == 0) {
+        compiler->compile();
+        return 0;
+    }
+
+    if(strcmp("run", search_option("--mode", &extra_options)) != 0 && strcmp("compile", search_option("--mode", &extra_options)) != 0) {
+        cout<<"Unkown mode option: "<<search_option("--mode", &extra_options)<<endl;
+        print_help();
+    }
+
 }

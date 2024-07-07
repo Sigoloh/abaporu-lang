@@ -12,13 +12,13 @@ class Compiler {
             Interpreter_Graph* graph_to_run = nullptr;
             bool waiting_block_closing = false;
             vector<Compiled_Block*> blocks;
-            string out_file = "output";
+            string out_file = "./outputs/output.cpp";
             string out_dir = "outputs";
             string blocks_buff = "";
             string cpp_func_buff = "";
             string cpp_buff = "";
     public:
-        [[nodiscard]] Compiler(Interpreter_Graph* graph, const string &out_file = "output", const string &out_dir = "outputs") {
+        [[nodiscard]] Compiler(Interpreter_Graph* graph, const string &out_file = "./outputs/output.cpp", const string &out_dir = "outputs") {
             this->out_dir = out_dir;
             this->out_file = out_file;
             this->graph_to_run = graph;
@@ -29,8 +29,7 @@ class Compiler {
         }
 
         void create_cpp_file(const string &content) const {
-            cout << "Creating: "<<"./outputs/" + this->out_file + ".cpp"<<endl;
-            ofstream out_file_created("./outputs/" + this->out_file + ".cpp");
+            ofstream out_file_created(this->out_file);
             out_file_created << content <<endl;
             out_file_created.close();
          }
