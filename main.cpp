@@ -5,6 +5,7 @@
 #include <vector>
 #include "./interpreter_graph.cpp"
 #include "./runner.cpp"
+#include "./compiler.cpp"
 using namespace std;
 
 vector<string> prepare_instructions(const string& file_path){
@@ -80,7 +81,11 @@ int main(const int argc, char *argv[]){
     }
 
     auto runner = new Runner(graph);
+
+    auto compiler = new Compiler(graph);
+
     runner->run();
 
+    compiler->compile();
     return 0;
 }
