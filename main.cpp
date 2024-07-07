@@ -6,7 +6,29 @@
 #include "./interpreter_graph.cpp"
 #include "./runner.cpp"
 #include "./compiler.cpp"
+#include "./Image_Creation.cpp"
 using namespace std;
+
+bool check_file(const string& file_path) {
+    int path_len = file_path.length();
+    if(path_len < 5) {
+        return false;
+    }
+
+    string path_ext = file_path.substr(path_len - 6, 6);
+    if(path_ext != ".abapl") {
+        return false;
+    }
+
+    ifstream input_file(file_path);
+
+    if(!input_file.good()) {
+        input_file.close();
+        return false;
+    }
+
+    return true;
+}
 
 vector<string> prepare_instructions(const string& file_path){
     regex color_pattern("#[0-9A-F]{6}", regex_constants::icase);
@@ -71,6 +93,17 @@ int get_arguments(
             pair<string, char*> extra_option = {"--help", new char[0]};
             extra_options->push_back(extra_option);
         }
+
+        if(strcmp("--scale-factor", argv[i]) == 0 || strcmp("-sc", argv[i]) == 0) {
+            if(i + 1 >= argc) {
+                cout<<"Flag "<<argv[i]<<" used without value!"<<endl;
+                return 1;
+            }
+            pair<string, char*> extra_option = {"--scale-factor", argv[i + 1]};
+
+            extra_options->push_back(extra_option);
+        }
+
     }
 
     return 0;
@@ -81,6 +114,7 @@ void print_help() {
     cout<<"Extra options:"<<endl;
     cout<<"--mode -m   value: "<<"compile | run"<<"   Choose the way abapl will handle your code. Default: run & compile"<<endl;
     cout<<"--cpp-output -cppo   value: "<<"path"<<"   Path to save the .cpp file after compilation. Default: [abapl-folder]/outputs/output.cpp"<<endl;
+    cout<<"--scale-factor -sc value: "<<"integer"<<"  Scale factor of the outputed .bmp file. Default: 3"<<endl;
     cout<<"--help -h"<<"   Display this message"<<endl;
 }
 
@@ -117,6 +151,12 @@ int main(const int argc, char *argv[]){
         return 0;
     }
 
+    if(!check_file(*input_target)) {
+        cout<<"[INPUT ERROR] The path you entered is not good!"<<endl;
+        cout<<"[INPUT ERROR] Check if "<<*input_target<<" exists and its a .abapl file"<<endl;
+        print_help();
+        return 1;
+    }
     vector<string> instructions_vec = prepare_instructions(*input_target);;
 
     const auto graph = new Interpreter_Graph();
@@ -136,6 +176,23 @@ int main(const int argc, char *argv[]){
         compiler = new Compiler(graph);
     }
 
+    Image_Creation* image_creation;
+
+    const int scale_factor = stoi(
+        search_option("--scale-factor", &extra_options) != nullptr ?
+        search_option("--scale-factor", &extra_options) :
+        "3"
+    );
+
+    if(output_target != nullptr) {
+        image_creation = new Image_Creation(instructions_vec, scale_factor, *output_target);
+    }else {
+        image_creation = new Image_Creation(instructions_vec, scale_factor);
+    }
+
+    clog<<"[INFO] Creating image..."<<endl;
+    image_creation->create();
+    cout<<"[INFO] Image saved: "<<*output_target<<endl;
     if(search_option("--mode", &extra_options) == nullptr) {
         runner->run();
 

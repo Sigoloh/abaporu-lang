@@ -52,7 +52,6 @@ class Compiled_Block{
                 long count = node->get_aux();
                 this->cpp_buff += "for(int i = 0; i < " + to_string(count) + "; i++){\n";
                 while(curr_instruction != nullptr && curr_instruction->get_operation() != "endl") {
-                    cout<<offset<<endl;
                     ++offset;
                     this->handle_instruction(curr_instruction);
                     curr_instruction = curr_instruction->get_next();

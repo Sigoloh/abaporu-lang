@@ -144,7 +144,6 @@ class Compiler {
 
                 if(this->waiting_block_closing) {
                     int block_offset = this->handle_block_creation(curr_instruction);
-                    cout<<"Block offset: "<<block_offset<<endl;
                     if(block_offset > 0) {
                         for(int i = 0; i < block_offset; i++) {
                             curr_instruction = curr_instruction->get_next();
