@@ -20,6 +20,8 @@ class Interpreter_Graph{
         bool waiting_block = false;
         Interpreter_Graph* loop_to_run = nullptr;
         vector<Interpreter_Graph*> blocks;
+        int comparison_len = 6;
+
         [[nodiscard]] Interpreter_Graph_Node* get_last_instruction() const {
             Interpreter_Graph_Node* curr = this->instructions_root;
 
@@ -78,7 +80,33 @@ class Interpreter_Graph{
                 new_instruction = new Interpreter_Graph_Node(instruction, "endb");
             } else if (instruction == "#3FFFE8"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "endl");
-            }  else if (instruction.substr(0, 3) == "#11"){
+            } else if(instruction.substr(0, 3) == "#1F") {
+                stringstream number_to_compare_hex;
+
+                number_to_compare_hex << hex << instruction.substr(3, 6);
+
+                int number_to_compare;
+
+                number_to_compare_hex >> number_to_compare;
+
+                new_instruction = new Interpreter_Graph_Node(instruction, "defif", number_to_compare);
+            } else if(instruction.substr(0, 3) == "#C0") {
+                stringstream operation_number_hex;
+
+                operation_number_hex << hex << instruction.substr(3, 6);
+
+                int operation_number;
+
+                 operation_number_hex >> operation_number;
+
+                if(operation_number > this->comparison_len) {
+                    cout<<"[CODE ERROR] Unkown operator with index: "<<operation_number<<endl;
+                    cout<<"Read the docs to learn more about operators"<<endl;
+                    return;
+                }
+
+                new_instruction = new Interpreter_Graph_Node(instruction, "defop", operation_number);
+            }else if (instruction.substr(0, 3) == "#11"){
                 stringstream loop_count_hex;
 
                 loop_count_hex << hex << instruction.substr(3, 6);

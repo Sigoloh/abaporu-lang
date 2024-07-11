@@ -18,16 +18,20 @@ As previously said, you use colors to determine the instructions your program sh
 
 ### List of implemented instructions
 
-| Name     | Function                                                                   | Hex     |
-|----------|----------------------------------------------------------------------------|---------|
-| addOne   | Add one to the current cell of the list                                    | #FF0000 |
-| subOne   | Subtract one to the current cell of the list                               | #0000FF |
-| nextcell | Move the pointer to the next cell of the list                              | #00FF00 |
-| prevCell | Move the pointer to the previous cell of the list                          | #FFF800 |
-| put      | Puts the value of the current cell in the `stdout` using ASCII table       | #FFFFFF |
-| putVal   | Puts the value of the current cell in the `stdout` as it is                | #555555 |
-| endBlock | End a previously declared block. More on blocks in one of the next topics. | #FFA500 |
-| endLoop  | End a previously started loop. More on loops in one of the next topics.    | #3FFFE8 |
+| Name     | Function                                                                   | Hex               |
+|----------|----------------------------------------------------------------------------|-------------------|
+| addOne   | Add one to the current cell of the list                                    | #FF0000           |
+| subOne   | Subtract one to the current cell of the list                               | #0000FF           |
+| nextcell | Move the pointer to the next cell of the list                              | #00FF00           |
+| prevCell | Move the pointer to the previous cell of the list                          | #FFF800           |
+| put      | Puts the value of the current cell in the `stdout` using ASCII table       | #FFFFFF           |
+| putVal   | Puts the value of the current cell in the `stdout` as it is                | #555555           |
+| defif    | Define an IF statement            | #1FXXXX           |
+| defop   | Define the kind of operation to the IF statement                           | #C0XXXX           |
+| defl     | Define a loop  | #11XXXX           
+| endLoop  | End a previously started loop    | #3FFFE8           |
+| defb | Define a block | (any other color)
+| endBlock | End a previously declared block | #FFA500           |
 ### Comentaries
 As it is impossible to keep track of all the things instructions do while developing in Abaporu Lang, I implement comments in the `.abapl`.</br>
 #### Single line comment
@@ -70,6 +74,43 @@ After the interpreter reads all of the colors of your art, it will send `LF` to 
 
 ## "Advanced" usage
 
+## Comparisons
+So, apparently, to be turing complete a language must do comparisons. In order to join the party, Abaporu Language have its own kind of comparisons.
+### The IF statement
+To do a comparisons, you first need to declare the IF. To do this, you need to use a color that starts with `#1F`. The other 4 bytes of the color will be the number you will be comparing the current slot of the sausage to.
+### The operator
+To declare what kind of operation you want your IF to do, you use this table to guide yourself.
+
+| Color   | Operation | Name |
+|---------|-----------|------|
+| #C00000 | `==`      | EQUAL |
+| #C00001 | `!=`      | NOT EQUAL |
+| #C00002 | `>`       | GREATER |
+| #C00003 | `>=`      | GREATER EQUAL |
+| #C00004 | `<`       | LESS |
+| #C00005 | `<=`      | LESS EQUAL|
+
+### How does it work?
+Lets suppose you want to check if the value in the slot of the sausage you are in is greater than 10.
+How would you do it in javascript?
+```javascript
+const curr_sausage_value = 9;
+if(curr_sausage_value > 10){
+    console.log('Abaporu!')
+}
+```
+Now, how would you do it in Abaporu?
+```
+* Define that we want to compare the slot with the number 10
+#1F000A
+* Define we want to know if its greater than
+#C00002
+#FFFFFF * If its true, puts the character of the number
+#555555 * If not, puts the value
+```
+Comparisons work in blocks and loops too. More on that, later in this document.
+
+## Making the code shorter
 You may have noticed in the `SimpleHelloWorld.abapl` example that the letters `l` and `o` needed to be declared twice and thought that's a waste of your time and creativity. I agree with you and thats why I implemented the concept of blocks in the Abaporu Lang. </br>
 ### Defining a block
 You can think about a block as you think about a function that returns nothing and receives nothing only working in the global scope of your code. </br>

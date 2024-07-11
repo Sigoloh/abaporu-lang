@@ -1,0 +1,10 @@
+* Loop to add 72 to sausage slot
+#110048
+#FF0000
+#3FFFE8
+* If declaration to compare the current sausage slot value to 72
+#1F0049
+* Declring that the operation will be EQUAL
+#C00000
+#FFFFFF
+#555555

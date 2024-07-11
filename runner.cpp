@@ -12,7 +12,6 @@ class Runner{
         bool waiting_block_closing = false;
         vector<Block*> blocks;
         int curr_sausage_index = 0;
-
     public:
         Runner(Interpreter_Graph* graph_to_run){
             this->slots_needed = 1;
@@ -152,6 +151,32 @@ class Runner{
 
         }
 
+        [[nodiscard]]
+        bool handle_comparisons(const int number_to_compare, const int operator_index) const {
+            switch (operator_index) {
+                case 1: // NOT EQUAL
+                    return number_to_compare != this->sausage[this->curr_sausage_index];
+                case 2: // GREATER
+                    return number_to_compare > this->sausage[this->curr_sausage_index];
+                case 3: // GREATER EQUAL
+                    return number_to_compare >= this->sausage[this->curr_sausage_index];
+                case 4: // LESS
+                    return number_to_compare < this->sausage[this->curr_sausage_index];
+                case 5: // LESS EQUAL
+                    return number_to_compare <= this->sausage[this->curr_sausage_index];
+                default: // DEFAULT OPERATION IS EQUAL
+                    return number_to_compare == this->sausage[this->curr_sausage_index];
+            }
+        }
+
+        bool run_comparison(Interpreter_Graph_Node* if_instruction) const {
+            const int number_to_compare = if_instruction->get_aux();
+
+            const int comparison_index = if_instruction->get_next()->get_aux();
+
+            return (this->handle_comparisons(number_to_compare, comparison_index));
+        }
+
         void run_block(long block_idx) {
             if(block_idx >= this->blocks.size() || block_idx < 0) {
                 cout<<"[RUNNER ERROR] Runner tried to run a block that is outside the scope of defined blocks"<<endl;
@@ -196,7 +221,7 @@ class Runner{
                     continue;
                 }
 
-                if(operation != "defl" && operation != "defb" && !this->waiting_block_closing) {
+                if(operation != "defl" && operation != "defb" && operation != "defif" && !this->waiting_block_closing) {
                     this->handle_simple_operations(operation);
 
                     curr_instruction = curr_instruction->get_next();
@@ -211,6 +236,22 @@ class Runner{
                 if(operation == "defl") {
                     int count = curr_instruction->get_aux();
                     this->handle_loop_execution(count, curr_instruction);
+                }
+
+                if(operation == "defif") {
+                    if(curr_instruction->get_next()->get_operation() != "defop") {
+                        cout<<"[CODE ERROR] You did not provided any operation to run"<<endl;
+                        return;
+                    }
+
+                    Interpreter_Graph_Node* aux;
+                    if(this->run_comparison(curr_instruction)) {
+                        curr_instruction = curr_instruction->get_next();
+
+                        curr_instruction->get_next()->set_next(curr_instruction->get_next()->get_next()->get_next());
+                    } else {
+                        curr_instruction = curr_instruction->get_next()->get_next();
+                    }
                 }
 
                 curr_instruction = curr_instruction->get_next();
