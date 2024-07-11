@@ -194,7 +194,9 @@ int main(const int argc, char *argv[]){
     image_creation->create();
     cout<<"[INFO] Image saved: "<<*output_target<<endl;
     if(search_option("--mode", &extra_options) == nullptr) {
+        cout<<"[CODE OUTPUT]"<<endl;
         runner->run();
+        cout<<"[END CODE OUTPUT]"<<endl;
 
         compiler->compile();
 
@@ -202,7 +204,9 @@ int main(const int argc, char *argv[]){
     }
 
     if(strcmp("run", search_option("--mode", &extra_options)) == 0) {
+        cout<<"[CODE OUTPUT]"<<endl;
         runner->run();
+        cout<<"[END CODE OUTPUT]"<<endl;
         return 0;
     }
 
