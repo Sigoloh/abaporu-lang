@@ -59,6 +59,10 @@ class Runner{
             if(operation == "putv") {
                 cout<<this->sausage[this->curr_sausage_index];
             }
+
+            if(operation == "resetPtr") {
+                this->curr_sausage_index = 0;
+            }
         }
 
         long find_block_by_name(const string& block_name) {

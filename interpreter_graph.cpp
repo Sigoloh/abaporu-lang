@@ -72,7 +72,9 @@ class Interpreter_Graph{
                 new_instruction = new Interpreter_Graph_Node(instruction, "next");
             } else if (instruction == "#FFF800"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "prev");
-            } else if (instruction == "#FFFFFF"){
+            } else if (instruction == "#435377") {
+                new_instruction = new Interpreter_Graph_Node(instruction, "resetPtr");
+            }else if (instruction == "#FFFFFF"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "puts");
             } else if (instruction == "#555555"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "putv");

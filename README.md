@@ -18,20 +18,21 @@ As previously said, you use colors to determine the instructions your program sh
 
 ### List of implemented instructions
 
-| Name     | Function                                                                   | Hex               |
-|----------|----------------------------------------------------------------------------|-------------------|
-| addOne   | Add one to the current cell of the list                                    | #FF0000           |
-| subOne   | Subtract one to the current cell of the list                               | #0000FF           |
-| nextcell | Move the pointer to the next cell of the list                              | #00FF00           |
-| prevCell | Move the pointer to the previous cell of the list                          | #FFF800           |
-| put      | Puts the value of the current cell in the `stdout` using ASCII table       | #FFFFFF           |
-| putVal   | Puts the value of the current cell in the `stdout` as it is                | #555555           |
-| defif    | Define an IF statement            | #1FXXXX           |
-| defop   | Define the kind of operation to the IF statement                           | #C0XXXX           |
-| defl     | Define a loop  | #11XXXX           
-| endLoop  | End a previously started loop    | #3FFFE8           |
-| defb | Define a block | (any other color)
-| endBlock | End a previously declared block | #FFA500           |
+| Name     | Function                                                             | Hex               |
+|----------|----------------------------------------------------------------------|-------------------|
+| addOne   | Add one to the current cell of the list                              | #FF0000           |
+| subOne   | Subtract one to the current cell of the list                         | #0000FF           |
+| nextcell | Move the pointer to the next cell of the list                        | #00FF00           |
+| prevCell | Move the pointer to the previous cell of the list                    | #FFF800           |
+| resetPtr | This reset the pointer to the first slot of the sausage      | #435377           |
+| put      | Puts the value of the current cell in the `stdout` using ASCII table | #FFFFFF           |
+| putVal   | Puts the value of the current cell in the `stdout` as it is          | #555555           |
+| defif    | Define an IF statement                                               | #1FXXXX           |
+| defop    | Define the kind of operation to the IF statement                     | #C0XXXX           |
+| defl     | Define a loop                                                        | #11XXXX           
+| endLoop  | End a previously started loop                                        | #3FFFE8           |
+| defb     | Define a block                                                       | (any other color) 
+| endBlock | End a previously declared block                                      | #FFA500           |
 ### Comentaries
 As it is impossible to keep track of all the things instructions do while developing in Abaporu Lang, I implement comments in the `.abapl`.</br>
 #### Single line comment

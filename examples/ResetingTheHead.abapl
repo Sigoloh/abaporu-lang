@@ -1,0 +1,23 @@
+* Seting the first slot to 65
+#110041
+	#FF0000
+#3FFFE8
+
+* This will put 'A'
+#FFFFFF
+#00FF00 * -> This goes to the next cell
+
+
+* Seting the second cell to 66
+#110042
+	#FF0000
+#3FFFE8
+
+* This will print 'B'
+#FFFFFF
+
+* Now we return to the first cell
+#435377
+
+* And then, print 'A' again
+#FFFFFF
