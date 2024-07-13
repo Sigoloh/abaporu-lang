@@ -18,20 +18,25 @@ As previously said, you use colors to determine the instructions your program sh
 
 ### List of implemented instructions
 
-| Name     | Function                                                                   | Hex               |
-|----------|----------------------------------------------------------------------------|-------------------|
-| addOne   | Add one to the current cell of the list                                    | #FF0000           |
-| subOne   | Subtract one to the current cell of the list                               | #0000FF           |
-| nextcell | Move the pointer to the next cell of the list                              | #00FF00           |
-| prevCell | Move the pointer to the previous cell of the list                          | #FFF800           |
-| put      | Puts the value of the current cell in the `stdout` using ASCII table       | #FFFFFF           |
-| putVal   | Puts the value of the current cell in the `stdout` as it is                | #555555           |
-| defif    | Define an IF statement            | #1FXXXX           |
-| defop   | Define the kind of operation to the IF statement                           | #C0XXXX           |
-| defl     | Define a loop  | #11XXXX           
-| endLoop  | End a previously started loop    | #3FFFE8           |
-| defb | Define a block | (any other color)
-| endBlock | End a previously declared block | #FFA500           |
+| Name     | Function                                                                      | Hex               |
+|----------|-------------------------------------------------------------------------------|-------------------|
+| addOne   | Add one to the current cell of the list                                       | #FF0000           |
+| subOne   | Subtract one to the current cell of the list                                  | #0000FF           |
+| nextcell | Move the pointer to the next cell of the list                                 | #00FF00           |
+| prevCell | Move the pointer to the previous cell of the list                             | #FFF800           |
+| resetPtr | This reset the pointer to the first cell of the sausage                       | #435377           |
+| putInMem | This will get the value of the current cell and store it in the runner memory | #CC0000           |
+| getMem   | This will add the value from the value to the current cell                    | #0000DD           |
+| useval   | This instruction will use the value of the curent cell in the next loop or comparison | #6E11A1 |
+| put      | Puts the value of the current cell in the `stdout` using ASCII table          | #FFFFFF           |
+| putVal   | Puts the value of the current cell in the `stdout` as it is                   | #555555           |
+| defif    | Define an IF statement                                                        | #1FXXXX           |
+| endif    | Declare the end of an if statement     | #E1F000 |
+| defop    | Define the kind of operation to the IF statement                              | #C0XXXX           |
+| defl     | Define a loop                                                                 | #11XXXX           |
+| endLoop  | End a previously started loop                                                 | #3FFFE8           |
+| defb     | Define a block                                                                | (any other color) |
+| endBlock | End a previously declared block                                               | #FFA500           |
 ### Comentaries
 As it is impossible to keep track of all the things instructions do while developing in Abaporu Lang, I implement comments in the `.abapl`.</br>
 #### Single line comment
@@ -74,6 +79,20 @@ After the interpreter reads all of the colors of your art, it will send `LF` to 
 
 ## "Advanced" usage
 
+## Memory
+The memory works in a very simple way. Basically, we have two operations to deal with it:
+
+| Color   | Name       |
+|---------|------------|
+ | #CC0000 | `putInMem` |
+| #0000DD | `getMem`   |
+
+Before I start, its important to know that Abaporu only handle ONE memory slot at time, so be careful to not forget your memory (:D)
+
+Everytime you decide its important to save a value to use later, you can store it in the memory of the interpreter using the `putInMem`.
+When you decide its time to use this value, you use `getMem` to ADD the stored value in the current sausage cell.
+
+
 ## Comparisons
 So, apparently, to be turing complete a language must do comparisons. In order to join the party, Abaporu Language have its own kind of comparisons.
 ### The IF statement
@@ -81,14 +100,14 @@ To do a comparisons, you first need to declare the IF. To do this, you need to u
 ### The operator
 To declare what kind of operation you want your IF to do, you use this table to guide yourself.
 
-| Color   | Operation | Name |
-|---------|-----------|------|
-| #C00000 | `==`      | EQUAL |
-| #C00001 | `!=`      | NOT EQUAL |
-| #C00002 | `>`       | GREATER |
+| Color   | Operation | Name          |
+|---------|-----------|---------------|
+| #C00000 | `==`      | EQUAL         |
+| #C00001 | `!=`      | NOT EQUAL     |
+| #C00002 | `>`       | GREATER       |
 | #C00003 | `>=`      | GREATER EQUAL |
-| #C00004 | `<`       | LESS |
-| #C00005 | `<=`      | LESS EQUAL|
+| #C00004 | `<`       | LESS          |
+| #C00005 | `<=`      | LESS EQUAL    |
 
 ### How does it work?
 Lets suppose you want to check if the value in the slot of the sausage you are in is greater than 10.
@@ -107,6 +126,7 @@ Now, how would you do it in Abaporu?
 #C00002
 #FFFFFF * If its true, puts the character of the number
 #555555 * If not, puts the value
+#E1F00 * Declare the end of if statement
 ```
 Comparisons work in blocks and loops too. More on that, later in this document.
 

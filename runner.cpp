@@ -59,6 +59,10 @@ class Runner{
             if(operation == "putv") {
                 cout<<this->sausage[this->curr_sausage_index];
             }
+
+            if(operation == "resetPtr") {
+                this->curr_sausage_index = 0;
+            }
         }
 
         long find_block_by_name(const string& block_name) {
@@ -98,7 +102,31 @@ class Runner{
             cout<<endl;
         }
 
-        void handle_loop_execution(int count, Interpreter_Graph_Node* curr_instruction) {
+        bool will_use_sausage_value(Interpreter_Graph_Node* curr_instruction) {
+            if(curr_instruction->get_prev() == nullptr) {
+                return false;
+            }
+
+            return curr_instruction->get_prev()->get_operation() == "useval";
+        }
+
+        void handle_loop_execution(Interpreter_Graph_Node* curr_instruction) {
+            int count = will_use_sausage_value(curr_instruction) ?
+                this->sausage[this->curr_sausage_index]          :
+                curr_instruction->get_aux();
+
+            if(count == 0) {
+                auto* endl_instruction = curr_instruction;
+                while(endl_instruction->get_next() != nullptr) {
+                    if(endl_instruction->get_operation() == "endl") {
+                        break;
+                    }
+                    endl_instruction = endl_instruction->get_next();
+                }
+                curr_instruction->set_next(endl_instruction);
+                return;
+            }
+
             while(count != 1) {
                 --count;
                 Interpreter_Graph_Node* loop_next_instruction = curr_instruction->get_next();
@@ -129,7 +157,6 @@ class Runner{
                 } else {
                     cout<<"[CODE ERROR] You cannot create blocks inside loops or inside other blocks"<<endl;
                 }
-
             }
         }
 
@@ -169,8 +196,10 @@ class Runner{
             }
         }
 
-        bool run_comparison(Interpreter_Graph_Node* if_instruction) const {
-            const int number_to_compare = if_instruction->get_aux();
+        bool run_comparison(Interpreter_Graph_Node* if_instruction) {
+            int number_to_compare = this->will_use_sausage_value(if_instruction) ?
+                this->sausage[this->curr_sausage_index]          :
+                if_instruction->get_aux();
 
             const int comparison_index = if_instruction->get_next()->get_aux();
 
@@ -182,9 +211,9 @@ class Runner{
                 cout<<"[RUNNER ERROR] Runner tried to run a block that is outside the scope of defined blocks"<<endl;
                 return;
             }
-            Block* block_to_run = this->blocks.at(block_idx);
+            Block block_to_run = *this->blocks.at(block_idx);
 
-            Interpreter_Graph_Node* curr_instruction = block_to_run->get_root();
+            Interpreter_Graph_Node* curr_instruction = block_to_run.get_root();
 
             while(curr_instruction != nullptr) {
                 string operation = curr_instruction->get_operation();
@@ -194,13 +223,40 @@ class Runner{
                 }
 
                 if(operation == "defl") {
-                    int count = curr_instruction->get_aux();
-                    this->handle_loop_execution(count, curr_instruction);
+                    this->handle_loop_execution(curr_instruction);
                 }
 
 
                 if(operation == "defb") {
                     this->handle_block_execution(curr_instruction, false);
+                }
+
+                if(operation == "defif") {
+                    bool will_define_operator = curr_instruction->get_next()->get_operation() == "defop";
+                    if(!will_define_operator) {
+                        cout<<"[CODE ERROR] You did not provided any operation to run"<<endl;
+                        return;
+                    }
+
+                    if(this->run_comparison(curr_instruction)) {
+                        curr_instruction = curr_instruction->get_next();
+
+                        auto* aux = curr_instruction;
+
+                        while(aux->get_next() != nullptr) {
+                            aux = aux->get_next();
+                            if(aux->get_operation() == "endif") {
+                                break;
+                            }
+                        }
+                        if(aux->get_operation() != "endif") {
+                            cout<<"[CODE ERROR] You did not used the endif statement."<<endl;
+                            return;
+                        }
+                        curr_instruction->get_next()->set_next(aux);
+                    } else {
+                        curr_instruction = curr_instruction->get_next()->get_next();
+                    }
                 }
 
                 curr_instruction = curr_instruction->get_next();
@@ -234,8 +290,7 @@ class Runner{
                 }
 
                 if(operation == "defl") {
-                    int count = curr_instruction->get_aux();
-                    this->handle_loop_execution(count, curr_instruction);
+                    this->handle_loop_execution(curr_instruction);
                 }
 
                 if(operation == "defif") {
@@ -244,11 +299,22 @@ class Runner{
                         return;
                     }
 
-                    Interpreter_Graph_Node* aux;
                     if(this->run_comparison(curr_instruction)) {
                         curr_instruction = curr_instruction->get_next();
+                        auto* aux = curr_instruction;
+                        while(aux->get_next() != nullptr) {
+                            aux = aux->get_next();
+                            if(aux->get_operation() == "endif") {
+                                break;
+                            }
+                        }
 
-                        curr_instruction->get_next()->set_next(curr_instruction->get_next()->get_next()->get_next());
+                        if(aux->get_operation() != "endif") {
+                            cout<<"[CODE ERROR] You did not used the endif statement."<<endl;
+                            return;
+                        }
+
+                        curr_instruction->get_next()->set_next(aux);
                     } else {
                         curr_instruction = curr_instruction->get_next()->get_next();
                     }

@@ -13,10 +13,6 @@ class Block: public Interpreter_Graph{
             this->name = std::move(name);
         }
 
-        ~Block() {
-            delete this;
-        }
-
         string get_name() {
             return this->name;
         }

@@ -1,0 +1,34 @@
+* In this example we will set three blocks that will together reset the value of a cell back to zero.
+
+#AA0000 * This block will add one from the current cell untill the cell value is zero
+  #FF0000
+  #1F0000
+  #C00002
+  #AA0000 
+  #E1F000
+#FFA500 * In this case, the endbl will act like the return in case the cell goes to zero
+
+#00BB00 * This block will take one from the current cell untill the cell value is zero
+  #0000FF
+  #1F0000
+  #C00004
+  #00BB00 
+  #E1F000
+#FFA500 * In this case, the endbl will act like the return in case the cell goes to zero
+
+
+#0000CC
+  #1F0000
+  #C00004
+  #00BB00
+  #AA0000
+  #E1F000
+#FFA500
+
+#110014
+ #0000FF
+#3FFFE8
+
+#555555 * Puts the current value of the cell
+#0000CC
+#555555

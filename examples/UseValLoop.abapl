@@ -1,0 +1,12 @@
+#110041 * First, add one to cell until 0x41
+  #FF0000
+#3FFFE8
+
+#555555 * Put val just to debut
+
+#6E11A1 * Declare that we are using the value of the cell in the next instruction
+#110000 * The loop that will run n times
+ #555555
+ #0000FF
+#3FFFE8
+#555555

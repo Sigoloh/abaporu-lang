@@ -37,10 +37,6 @@ class Interpreter_Graph{
             this->run_status = "Interpreting";
         }
 
-        ~Interpreter_Graph(){
-            delete this;
-        }
-
         void add_instruction(string instruction, string operation){
             if(this->instructions_root == nullptr){
                 this->instructions_root = new Interpreter_Graph_Node(instruction, operation);
@@ -72,14 +68,24 @@ class Interpreter_Graph{
                 new_instruction = new Interpreter_Graph_Node(instruction, "next");
             } else if (instruction == "#FFF800"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "prev");
-            } else if (instruction == "#FFFFFF"){
+            } else if(instruction == "#CC0000") {
+                new_instruction = new Interpreter_Graph_Node(instruction, "putInMem");
+            }else if(instruction == "#0000DD") {
+                new_instruction = new Interpreter_Graph_Node(instruction, "getMem");
+            }else if (instruction == "#435377") {
+                new_instruction = new Interpreter_Graph_Node(instruction, "resetPtr");
+            }else if (instruction == "#FFFFFF"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "puts");
             } else if (instruction == "#555555"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "putv");
             } else if (instruction == "#FFA500"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "endb");
-            } else if (instruction == "#3FFFE8"){
+            } else if(instruction == "#6E11A1") {
+                new_instruction = new Interpreter_Graph_Node(instruction, "useval");
+            }else if (instruction == "#3FFFE8"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "endl");
+            } else if (instruction == "#E1F000") {
+                new_instruction = new Interpreter_Graph_Node(instruction, "endif");
             } else if(instruction.substr(0, 3) == "#1F") {
                 stringstream number_to_compare_hex;
 
@@ -127,7 +133,7 @@ class Interpreter_Graph{
             }
 
             Interpreter_Graph_Node* last_instruction = this->get_last_instruction();
-
+            new_instruction->set_prev(last_instruction);
             last_instruction->set_next(new_instruction);
         }
 
