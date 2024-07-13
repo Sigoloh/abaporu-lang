@@ -27,10 +27,11 @@ As previously said, you use colors to determine the instructions your program sh
 | resetPtr | This reset the pointer to the first cell of the sausage                       | #435377           |
 | putInMem | This will get the value of the current cell and store it in the runner memory | #CC0000           |
 | getMem   | This will add the value from the value to the current cell                    | #0000DD           |
+| useval   | This instruction will use the value of the curent cell in the next loop or comparison | #6E11A1 |
 | put      | Puts the value of the current cell in the `stdout` using ASCII table          | #FFFFFF           |
 | putVal   | Puts the value of the current cell in the `stdout` as it is                   | #555555           |
 | defif    | Define an IF statement                                                        | #1FXXXX           |
-| endif | Declare the end of an if statement     | #E1F000 |
+| endif    | Declare the end of an if statement     | #E1F000 |
 | defop    | Define the kind of operation to the IF statement                              | #C0XXXX           |
 | defl     | Define a loop                                                                 | #11XXXX           |
 | endLoop  | End a previously started loop                                                 | #3FFFE8           |

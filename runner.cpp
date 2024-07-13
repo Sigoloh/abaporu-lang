@@ -102,7 +102,18 @@ class Runner{
             cout<<endl;
         }
 
-        void handle_loop_execution(int count, Interpreter_Graph_Node* curr_instruction) {
+        bool will_use_sausage_value(Interpreter_Graph_Node* curr_instruction) {
+            if(curr_instruction->get_prev() == nullptr) {
+                return false;
+            }
+
+            return curr_instruction->get_prev()->get_operation() == "useval";
+        }
+
+        void handle_loop_execution(Interpreter_Graph_Node* curr_instruction) {
+            int count = will_use_sausage_value(curr_instruction) ?
+                this->sausage[this->curr_sausage_index]          :
+                curr_instruction->get_aux();
 
             if(count == 0) {
                 auto* endl_instruction = curr_instruction;
@@ -185,8 +196,10 @@ class Runner{
             }
         }
 
-        bool run_comparison(Interpreter_Graph_Node* if_instruction) const {
-            const int number_to_compare = if_instruction->get_aux();
+        bool run_comparison(Interpreter_Graph_Node* if_instruction) {
+            int number_to_compare = this->will_use_sausage_value(if_instruction) ?
+                this->sausage[this->curr_sausage_index]          :
+                if_instruction->get_aux();
 
             const int comparison_index = if_instruction->get_next()->get_aux();
 
@@ -210,11 +223,7 @@ class Runner{
                 }
 
                 if(operation == "defl") {
-                    int count = curr_instruction->get_aux();
-                    if(curr_instruction->get_prev() != nullptr) {
-                       cout<<"Antes do loop: "<< curr_instruction->get_prev()->get_operation()<<endl;
-                    }
-                    this->handle_loop_execution(count, curr_instruction);
+                    this->handle_loop_execution(curr_instruction);
                 }
 
 
@@ -281,11 +290,7 @@ class Runner{
                 }
 
                 if(operation == "defl") {
-                    int count = curr_instruction->get_aux();
-                    if(curr_instruction->get_prev() != nullptr) {
-                       cout<<"Antes do loop: "<< curr_instruction->get_prev()->get_operation()<<endl;
-                    }
-                    this->handle_loop_execution(count, curr_instruction);
+                    this->handle_loop_execution(curr_instruction);
                 }
 
                 if(operation == "defif") {

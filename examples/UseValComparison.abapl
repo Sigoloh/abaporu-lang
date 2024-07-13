@@ -1,0 +1,12 @@
+#110041 * Add one to cell until 0x41
+  #FF0000
+#3FFFE8
+
+#555555 * Just to debug
+
+#6E11A1 * Declare that we are using the cell value as number to compare
+#1F0000
+#C00001
+#FFFFFF
+#555555
+#E1F000
