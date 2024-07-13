@@ -186,9 +186,9 @@ class Runner{
                 cout<<"[RUNNER ERROR] Runner tried to run a block that is outside the scope of defined blocks"<<endl;
                 return;
             }
-            Block* block_to_run = this->blocks.at(block_idx);
+            Block block_to_run = *this->blocks.at(block_idx);
 
-            Interpreter_Graph_Node* curr_instruction = block_to_run->get_root();
+            Interpreter_Graph_Node* curr_instruction = block_to_run.get_root();
 
             while(curr_instruction != nullptr) {
                 string operation = curr_instruction->get_operation();
@@ -205,6 +205,34 @@ class Runner{
 
                 if(operation == "defb") {
                     this->handle_block_execution(curr_instruction, false);
+                }
+
+                if(operation == "defif") {
+                    bool will_define_operator = curr_instruction->get_next()->get_operation() == "defop";
+                    if(!will_define_operator) {
+                        cout<<"[CODE ERROR] You did not provided any operation to run"<<endl;
+                        return;
+                    }
+
+                    if(this->run_comparison(curr_instruction)) {
+                        curr_instruction = curr_instruction->get_next();
+
+                        auto* aux = curr_instruction;
+
+                        while(aux->get_next() != nullptr) {
+                            aux = aux->get_next();
+                            if(aux->get_operation() == "endif") {
+                                break;
+                            }
+                        }
+                        if(aux->get_operation() != "endif") {
+                            cout<<"[CODE ERROR] You did not used the endif statement."<<endl;
+                            return;
+                        }
+                        curr_instruction->get_next()->set_next(aux);
+                    } else {
+                        curr_instruction = curr_instruction->get_next()->get_next();
+                    }
                 }
 
                 curr_instruction = curr_instruction->get_next();
@@ -248,11 +276,22 @@ class Runner{
                         return;
                     }
 
-                    Interpreter_Graph_Node* aux;
                     if(this->run_comparison(curr_instruction)) {
                         curr_instruction = curr_instruction->get_next();
+                        auto* aux = curr_instruction;
+                        while(aux->get_next() != nullptr) {
+                            aux = aux->get_next();
+                            if(aux->get_operation() == "endif") {
+                                break;
+                            }
+                        }
 
-                        curr_instruction->get_next()->set_next(curr_instruction->get_next()->get_next()->get_next());
+                        if(aux->get_operation() != "endif") {
+                            cout<<"[CODE ERROR] You did not used the endif statement."<<endl;
+                            return;
+                        }
+
+                        curr_instruction->get_next()->set_next(aux);
                     } else {
                         curr_instruction = curr_instruction->get_next()->get_next();
                     }

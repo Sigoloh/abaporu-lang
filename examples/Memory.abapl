@@ -1,0 +1,9 @@
+#110045
+  #FF0000
+#3FFFE8
+#CC0000 * Lets get this value and store it in the memory
+#FFFFFF
+#00FF00
+#FF0000
+#0000DD * Lets add the value from the memory in the current slot of the sausage
+#FFFFFF

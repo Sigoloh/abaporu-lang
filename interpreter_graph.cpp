@@ -37,10 +37,6 @@ class Interpreter_Graph{
             this->run_status = "Interpreting";
         }
 
-        ~Interpreter_Graph(){
-            delete this;
-        }
-
         void add_instruction(string instruction, string operation){
             if(this->instructions_root == nullptr){
                 this->instructions_root = new Interpreter_Graph_Node(instruction, operation);
@@ -72,7 +68,11 @@ class Interpreter_Graph{
                 new_instruction = new Interpreter_Graph_Node(instruction, "next");
             } else if (instruction == "#FFF800"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "prev");
-            } else if (instruction == "#435377") {
+            } else if(instruction == "#CC0000") {
+                new_instruction = new Interpreter_Graph_Node(instruction, "putInMem");
+            }else if(instruction == "#0000DD") {
+                new_instruction = new Interpreter_Graph_Node(instruction, "getMem");
+            }else if (instruction == "#435377") {
                 new_instruction = new Interpreter_Graph_Node(instruction, "resetPtr");
             }else if (instruction == "#FFFFFF"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "puts");
@@ -82,6 +82,8 @@ class Interpreter_Graph{
                 new_instruction = new Interpreter_Graph_Node(instruction, "endb");
             } else if (instruction == "#3FFFE8"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "endl");
+            } else if (instruction == "#E1F000") {
+                new_instruction = new Interpreter_Graph_Node(instruction, "endif");
             } else if(instruction.substr(0, 3) == "#1F") {
                 stringstream number_to_compare_hex;
 
