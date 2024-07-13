@@ -103,6 +103,19 @@ class Runner{
         }
 
         void handle_loop_execution(int count, Interpreter_Graph_Node* curr_instruction) {
+
+            if(count == 0) {
+                auto* endl_instruction = curr_instruction;
+                while(endl_instruction->get_next() != nullptr) {
+                    if(endl_instruction->get_operation() == "endl") {
+                        break;
+                    }
+                    endl_instruction = endl_instruction->get_next();
+                }
+                curr_instruction->set_next(endl_instruction);
+                return;
+            }
+
             while(count != 1) {
                 --count;
                 Interpreter_Graph_Node* loop_next_instruction = curr_instruction->get_next();
@@ -133,7 +146,6 @@ class Runner{
                 } else {
                     cout<<"[CODE ERROR] You cannot create blocks inside loops or inside other blocks"<<endl;
                 }
-
             }
         }
 
@@ -199,6 +211,9 @@ class Runner{
 
                 if(operation == "defl") {
                     int count = curr_instruction->get_aux();
+                    if(curr_instruction->get_prev() != nullptr) {
+                       cout<<"Antes do loop: "<< curr_instruction->get_prev()->get_operation()<<endl;
+                    }
                     this->handle_loop_execution(count, curr_instruction);
                 }
 
@@ -267,6 +282,9 @@ class Runner{
 
                 if(operation == "defl") {
                     int count = curr_instruction->get_aux();
+                    if(curr_instruction->get_prev() != nullptr) {
+                       cout<<"Antes do loop: "<< curr_instruction->get_prev()->get_operation()<<endl;
+                    }
                     this->handle_loop_execution(count, curr_instruction);
                 }
 

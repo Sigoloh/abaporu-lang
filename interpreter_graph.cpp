@@ -80,7 +80,9 @@ class Interpreter_Graph{
                 new_instruction = new Interpreter_Graph_Node(instruction, "putv");
             } else if (instruction == "#FFA500"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "endb");
-            } else if (instruction == "#3FFFE8"){
+            } else if(instruction == "#6E11A1") {
+                new_instruction = new Interpreter_Graph_Node(instruction, "getval");
+            }else if (instruction == "#3FFFE8"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "endl");
             } else if (instruction == "#E1F000") {
                 new_instruction = new Interpreter_Graph_Node(instruction, "endif");
@@ -131,7 +133,7 @@ class Interpreter_Graph{
             }
 
             Interpreter_Graph_Node* last_instruction = this->get_last_instruction();
-
+            new_instruction->set_prev(last_instruction);
             last_instruction->set_next(new_instruction);
         }
 
