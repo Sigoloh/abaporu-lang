@@ -22,10 +22,6 @@ class Interpreter_Graph_Node{
            this->prev = nullptr;
         }
 
-        ~Interpreter_Graph_Node(){
-            delete this;
-        }
-
         void set_next(Interpreter_Graph_Node* next_to_set){
             this->next = next_to_set;
        }
