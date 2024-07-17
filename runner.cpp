@@ -10,6 +10,7 @@ class Runner{
         Interpreter_Graph* graph_to_run = nullptr;
         int* sausage;
         bool waiting_block_closing = false;
+        int mem = 0;
         vector<Block*> blocks;
         int curr_sausage_index = 0;
     public:
@@ -42,6 +43,14 @@ class Runner{
                     this->add_slot_to_sausage();
                 }
                 ++this->curr_sausage_index;
+            }
+
+            if(operation == "putInMem") {
+                this->mem = this->sausage[this->curr_sausage_index];
+            }
+
+            if(operation == "getMem") {
+                this->sausage[this->curr_sausage_index] += this->mem;
             }
 
             if(operation == "prev") {
@@ -128,8 +137,9 @@ class Runner{
             }
 
             while(count != 1) {
+                Interpreter_Graph_Node loop_root = *(curr_instruction);
                 --count;
-                Interpreter_Graph_Node* loop_next_instruction = curr_instruction->get_next();
+                Interpreter_Graph_Node* loop_next_instruction = loop_root.get_next();
                 while(loop_next_instruction->get_operation() != "endl") {
                     string loop_operation = loop_next_instruction->get_operation();
 
@@ -137,9 +147,50 @@ class Runner{
                         this->handle_block_execution(loop_next_instruction, false);
                     }
 
-                    this->handle_simple_operations(loop_operation);
+                    if(loop_operation == "defif") {
+                        bool will_define_operator = loop_next_instruction->get_next()->get_operation() == "defop";
+                        if(!will_define_operator) {
+                            cout<<"[CODE ERROR] You did not provided any operation to run"<<endl;
+                            return;
+                        }
 
-                    loop_next_instruction = loop_next_instruction->get_next();
+                        auto* aux = loop_next_instruction;
+
+                        while(aux->get_next() != nullptr) {
+                            aux = aux->get_next();
+                            if(aux->get_operation() == "endif") {
+                                break;
+                            }
+                        }
+
+                        if(aux->get_operation() != "endif") {
+                            cout<<"[CODE ERROR] You did not used the endif statement."<<endl;
+                            return;
+                        }
+
+                        if(this->run_comparison(loop_next_instruction)) {
+                            loop_next_instruction = loop_next_instruction->get_next();
+
+                            loop_next_instruction->get_next()->set_next(aux);
+                        } else {
+                            auto next_instruction = loop_next_instruction->get_next()->get_next();
+                            loop_next_instruction = next_instruction;
+                        }
+                    }
+
+                    if(loop_operation != "defif") {
+                        this->handle_simple_operations(loop_operation);
+                    }
+
+                    auto* loop_next = loop_next_instruction->get_next();
+
+                    // the real fix to this problem is to make loops be one-run blocks. But I'll not do this rn
+                    if(loop_operation == "defif") {
+                        loop_next = loop_next->get_prev();
+                    }
+
+                    loop_next_instruction = loop_next;
+
                 }
 
             }

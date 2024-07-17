@@ -80,7 +80,7 @@ class Interpreter_Graph{
                 new_instruction = new Interpreter_Graph_Node(instruction, "putv");
             } else if (instruction == "#FFA500"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "endb");
-            } else if(instruction == "#6E11A1") {
+            }else if(instruction == "#6E11A1") {
                 new_instruction = new Interpreter_Graph_Node(instruction, "useval");
             }else if (instruction == "#3FFFE8"){
                 new_instruction = new Interpreter_Graph_Node(instruction, "endl");
