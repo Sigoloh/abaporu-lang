@@ -1,0 +1,66 @@
+* This example aims to implements all the instructios described in the wikipedia article of the Counting Machine
+* Wikipedia: https://en.wikipedia.org/wiki/Counter_machine
+
+* CLR (r): CLeaR register r. (Set r to zero.)
+* INC (r): INCrement the contents of register r.
+* DEC (r): DECrement the contents of register r.
+* CPY (rj, rk): CoPY the contents of register rj to register rk leaving the contents of rj intact.
+* JZ (r, z): IF register r contains Zero THEN Jump to instruction z ELSE continue in sequence.
+* JE (rj, rk, z): IF the contents of register rj Equals the contents of register rk THEN Jump to instruction z ELSE continue in sequence.
+
+* For all the instructions, r will be the slot zero of the sausage, and rj, rk or z will be the slot one.
+
+#AA0000 * This block will add one from the current cell untill the cell value is zero
+  #1F0000
+  #FF0000
+  #C00002
+  #AA0000 
+  #E1F000
+#FFA500 * In this case, the endbl will act like the return in case the cell goes to zero
+
+#00BB00 * This block will take one from the current cell untill the cell value is zero
+  #0000FF
+  #1F0000
+  #C00004
+  #00BB00 
+  #E1F000
+#FFA500 * In this case, the endbl will act like the return in case the cell goes to zero
+
+
+* This block is the CLR
+#0000CC
+  #1F0000
+  #C00004
+  #00BB00
+  #AA0000
+  #E1F000
+#FFA500
+
+* Incremetion and Decremention of a given record are both default instructions of Abaporu Lang.
+#FF0000 * INC
+#0000FF * DEC
+
+* CPY will copy the content of the current cell into the next 
+#C91679
+  #CC0000 * Save the content of the first cell in the memory
+  #00FF00 * First make sure the next cell is set to zero
+  #0000CC
+  #0000DD * Load the value of the previous cell in this cell
+#FFA500
+
+* JZ if the current cell is zero, add one to it. Else, continue
+#891234 
+  #1F0000
+  #C00000
+  #FF0000 
+  #E1F000
+#FFA500 * In this case, the endbl will act like the return in case the cell goes to zero
+
+* JE if the contents of register rj Equals the contents of register rk THEN Jump to instruction z ELSE continue in sequence.
+#AE1070
+  #6E11A1
+  #1F0000
+  #C00000
+  #FF0000
+  #E1F000
+#FFA500
